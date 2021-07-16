@@ -1,11 +1,10 @@
 <?php
 
 
-namespace src\Controller\Admin;
+namespace App\Controller\Admin;
 
 
 use App\Entity\User;
-use App\Controller\Admin\AdminBaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,4 +22,5 @@ class AdminUserController extends AdminBaseController
         $forRender['title'] = 'Users';
         return $this->render('admin/user/index.html.twig', $forRender);
     }
+
 }
