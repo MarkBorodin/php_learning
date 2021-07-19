@@ -30,33 +30,14 @@
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for user in users %}
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>{{ user.email }}</td>
-{#                            <td>{{ user.fullName }}</td>#}
-                            <td>{{ user.roles | json_encode }}</td>
-{#                            <td>#}
-{#                                <a href="{{ path('admin_user_update', {'userId': user.id }) }}"#}
-{#                                   class="btn btn-primary">#}
-{#                                    Edit#}
-{#                                </a>#}
-{#                            </td>#}
-                        </tr>
+                <h2>Posts list</h2>
+                <ul>
+                    {% for post_item in post %}
+                        <li>
+                            {{ post_item.title }}
+                        </li>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </ul>
             </div>
         </div>
     </div>
@@ -64,7 +45,7 @@
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12 mt-5">
-                <a href="{{ path('admin_user_create') }}" class="btn btn-success">Create user</a>
+                <a href="" class="btn btn-success">Create post</a>
             </div>
         </div>
     </div>
