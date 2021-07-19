@@ -7,7 +7,9 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\AdminBaseController;
 use App\Entity\Post;
 use App\Form\PostType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminPostController extends AdminBaseController
@@ -31,6 +33,8 @@ class AdminPostController extends AdminBaseController
 
     /**
      * @Route("/admin/post/create", name="admin_post_create")
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function create(Request $request)
     {
@@ -70,7 +74,8 @@ class AdminPostController extends AdminBaseController
         $forRender['title'] = 'Create post';
         $forRender['form'] = $form->createView();
 
-//        return
+        // return render
+        return $this->render('admin/post/form.html.twig', $forRender);
 
     }
 }
