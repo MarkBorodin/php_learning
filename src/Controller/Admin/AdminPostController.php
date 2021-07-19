@@ -27,8 +27,11 @@ class AdminPostController extends AdminBaseController
         $forRender['title'] = 'Posts';
         $forRender['post'] = $post;
 
+        // error - Unable to find template "admin/post/index.html.twig"
+        // return $this->render('admin/post/index.html.twig', $forRender);
+
         // return render
-        return $this->render('admin/post/index.html.twig', $forRender);
+        return $this->render('post/index.html.twig', $forRender);
     }
 
     /**
@@ -74,8 +77,10 @@ class AdminPostController extends AdminBaseController
         $forRender['title'] = 'Create post';
         $forRender['form'] = $form->createView();
 
-        // return render
-        return $this->render('admin/post/form.html.twig', $forRender);
+        // error - Unable to find template "admin/post/index.html.twig"
+        // return $this->render('admin/post/form.html.twig', $forRender);
 
+        // return render
+        return $this->render('post/form.html.twig', $forRender);
     }
 }
