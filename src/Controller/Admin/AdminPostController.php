@@ -96,14 +96,15 @@ class AdminPostController extends AdminBaseController
         // return render
         return $this->render('admin/post/form.html.twig', $forRender);
     }
-    
+
     /**
      * @Route("/admin/post/update/{id}", name="admin_post_update")
      * @param int $id
      * @param Request $request
+     * @param FileManagerServiceInterface $fileManagerService
      * @return RedirectResponse|Response
      */
-    public function update(int $id, Request $request)
+    public function update(int $id, Request $request, FileManagerServiceInterface $fileManagerService)
     {
         // create manager
         $em = $this->getDoctrine()->getManager();
@@ -123,6 +124,27 @@ class AdminPostController extends AdminBaseController
             // check if the save button was pressed
             if ($form->get('save')->isClicked())
             {
+                // get image from form
+                $image = $form->get('image')->getData();
+
+                if ($image)
+                {
+                    // try to get old image
+                    $imageOld = $post->getImage();
+
+                    // if old image
+                    if ($imageOld)
+                    {
+                        // remove old image
+                        $fileManagerService->removePostImage($imageOld);
+                    }
+                    // upload new image and get its name
+                    $fileName = $fileManagerService->imagePostUpload($image);
+
+                    // set new image name
+                    $post->setImage($fileName);
+                }
+
                 // updated datetime update
                 $post->setUpdateAtValue();
 
@@ -137,7 +159,17 @@ class AdminPostController extends AdminBaseController
             // check if the delete button was pressed
             if ($form->get('delete')->isClicked())
             {
-                // remove data using manager ($em)
+                // get image
+                $image = $post->getImage();
+
+                // if exists
+                if ($image)
+                {
+                    // remove image
+                    $fileManagerService->removePostImage($image);
+                }
+
+                // remove object using manager ($em)
                 $em->remove($post);
                 $em->flush();
 
