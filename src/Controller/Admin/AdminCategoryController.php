@@ -57,7 +57,7 @@ class AdminCategoryController extends AdminBaseController
             $category->setUpdateAtValue();
             $category->setIsPublished();
 
-            // save data using manage ($em)
+            // save data using manager ($em)
             $em->persist($category);
             $em->flush();
 
@@ -76,4 +76,68 @@ class AdminCategoryController extends AdminBaseController
         // return render
         return $this->render('admin/category/form.html.twig', $forRender);
     }
+
+    /**
+     * @Route("/admin/category/update/{id}", name="admin_category_update")
+     * @param int $id
+     * @param Request $request
+     * @return RedirectResponse|Response
+     */
+    public function update(int $id, Request $request)
+    {
+        // create manager
+        $em = $this->getDoctrine()->getManager();
+
+        // get category object by id
+        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
+
+        // create form to change category
+        $form = $this->createForm(CategoryType::class, $category);
+
+        // get data from request
+        $form->handleRequest($request);
+
+        //  check and process form
+        if(($form->isSubmitted()) && ($form->isValid()))
+        {
+            // check if the save button was pressed
+            if ($form->get('save')->isClicked())
+            {
+                // updated datetime update
+                $category->setUpdateAtValue();
+
+                // save data using manager ($em)
+                $em->persist($category);
+                $em->flush();
+
+                // add flash message
+                $this->addFlash('success', 'category updated');
+            }
+
+            // check if the delete button was pressed
+            if ($form->get('delete')->isClicked())
+            {
+                // remove data using manager ($em)
+                $em->remove($category);
+                $em->flush();
+
+                // add flash message
+                $this->addFlash('success', 'category deleted');
+            }
+
+            // return redirect
+            return $this->redirectToRoute('admin_category');
+
+        }
+
+        // create and fill context
+        $forRender = parent::renderDefault();
+        $forRender['title'] = 'Update category';
+        $forRender['form'] = $form->createView();
+
+        // return render
+        return $this->render('admin/category/form.html.twig', $forRender);
+
+    }
+
 }

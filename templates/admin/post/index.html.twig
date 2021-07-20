@@ -35,6 +35,9 @@
                     {% for post_item in post %}
                         <li>
                             {{ post_item.title }}
+                            <a href="{{ path('admin_post_update', {'id': post_item.id}) }}" class="btn-link">
+                                Update
+                            </a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -42,12 +45,22 @@
         </div>
     </div>
 
+
     <div class="container">
         <div class="row no-gutters">
-            <div class="col-12 mt-5">
-                <a href="{{ path('admin_post_create') }}" class="btn btn-success">Create post</a>
+            <div class="col-12">
+                {% if check_category %}
+                    <a href="{{ path('admin_post_create') }}" class="btn btn-success">Create post</a>
+                {% else %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <h3>first create at least one category</h3>
+                    <hr>
+                    <a href="{{ path('admin_category_create') }}">Create category</a>
+                </div>
+            {% endif %}
             </div>
         </div>
     </div>
+
 
 {% endblock %}
