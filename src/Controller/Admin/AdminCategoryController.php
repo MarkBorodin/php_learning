@@ -4,35 +4,34 @@
 namespace App\Controller\Admin;
 
 
-use App\Controller\Admin\AdminBaseController;
-use App\Entity\Post;
-use App\Form\PostType;
+use App\Entity\Category;
+use App\Form\CategoryType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AdminPostController extends AdminBaseController
+class AdminCategoryController extends AdminBaseController
 {
     /**
-     * @Route("/admin/post", name="admin_post")
+     * @Route("/admin/category", name="admin_category")
      */
     public function index()
     {
-        // get all posts
-        $post = $this->getDoctrine()->getRepository(Post::class)->findAll();
+        // get all categories
+        $category = $this->getDoctrine()->getRepository(Category::class)->findAll();
 
         // create and fill context
         $forRender = parent::renderDefault();
-        $forRender['title'] = 'Posts';
-        $forRender['post'] = $post;
+        $forRender['title'] = 'Categories';
+        $forRender['category'] = $category;
 
         // return render
-        return $this->render('admin/post/index.html.twig', $forRender);
+        return $this->render('admin/category/index.html.twig', $forRender);
     }
 
     /**
-     * @Route("/admin/post/create", name="admin_post_create")
+     * @Route("/admin/category/create", name="admin_category_create")
      * @param Request $request
      * @return RedirectResponse|Response
      */
@@ -41,11 +40,11 @@ class AdminPostController extends AdminBaseController
         // create manager
         $em = $this->getDoctrine()->getManager();
 
-        // create new post object
-        $post = new Post();
+        // create new category object
+        $category = new Category();
 
         // create form
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(CategoryType::class, $category);
 
         // handle request
         $form->handleRequest($request);
@@ -54,27 +53,27 @@ class AdminPostController extends AdminBaseController
         if(($form->isSubmitted()) && ($form->isValid()))
         {
             // set values
-            $post->setCreateAtValue();
-            $post->setUpdateAtValue();
-            $post->setIsPublished();
+            $category->setCreateAtValue();
+            $category->setUpdateAtValue();
+            $category->setIsPublished();
 
             // save data using manage ($em)
-            $em->persist($post);
+            $em->persist($category);
             $em->flush();
 
             // add flash message
-            $this->addFlash('success', 'post added');
+            $this->addFlash('success', 'category added');
 
             // return redirect
-            return $this->redirectToRoute('admin_post');
+            return $this->redirectToRoute('admin_category');
         }
 
         // create and fill context
         $forRender = parent::renderDefault();
-        $forRender['title'] = 'Create post';
+        $forRender['title'] = 'Create category';
         $forRender['form'] = $form->createView();
 
         // return render
-        return $this->render('admin/post/form.html.twig', $forRender);
+        return $this->render('admin/category/form.html.twig', $forRender);
     }
 }
