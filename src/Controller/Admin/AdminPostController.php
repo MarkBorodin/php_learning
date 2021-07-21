@@ -8,6 +8,8 @@ use App\Controller\Admin\AdminBaseController;
 use App\Entity\Category;
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Repository\CategoryRepositoryInterface;
+use App\Repository\PostRepositoryInterface;
 use App\Service\FileManagerServiceInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,22 +18,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminPostController extends AdminBaseController
 {
+    private $categoryRepository;
+    private $postRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository, PostRepositoryInterface $postRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+        $this->postRepository = $postRepository;
+    }
+
     /**
      * @Route("/admin/post", name="admin_post")
      */
     public function index()
     {
-        // get all posts
-        $post = $this->getDoctrine()->getRepository(Post::class)->findAll();
-
-        // get all posts categories (for check)
-        $checkCategory = $this->getDoctrine()->getRepository(Category::class)->findAll();
-
         // create and fill context
         $forRender = parent::renderDefault();
         $forRender['title'] = 'Posts';
-        $forRender['post'] = $post;
-        $forRender['check_category'] = $checkCategory;
+        $forRender['post'] = $this->postRepository->getAllPost();
+        $forRender['check_category'] = $this->categoryRepository->getAllCategory();
 
         // return render
         return $this->render('admin/post/index.html.twig', $forRender);
@@ -40,14 +45,10 @@ class AdminPostController extends AdminBaseController
     /**
      * @Route("/admin/post/create", name="admin_post_create")
      * @param Request $request
-     * @param FileManagerServiceInterface $fileManagerService
      * @return RedirectResponse|Response
      */
-    public function create(Request $request, FileManagerServiceInterface $fileManagerService)
+    public function create(Request $request)
     {
-        // create manager
-        $em = $this->getDoctrine()->getManager();
-
         // create new post object
         $post = new Post();
 
@@ -61,25 +62,10 @@ class AdminPostController extends AdminBaseController
         if(($form->isSubmitted()) && ($form->isValid()))
         {
             // get image from form
-            $image = $form->get('image')->getData();
+            $file = $form->get('image')->getData();
 
-            if ($image)
-            {
-                // rename file, get new name and move file in file directory
-                $fileName = $fileManagerService->imagePostUpload($image);
-
-                // set image in post object
-                $post->setImage($fileName);
-            }
-
-            // set values
-            $post->setCreateAtValue();
-            $post->setUpdateAtValue();
-            $post->setIsPublished();
-
-            // save data using manage ($em)
-            $em->persist($post);
-            $em->flush();
+            // create post and save it
+            $this->postRepository->setCreatePost($post, $file);
 
             // add flash message
             $this->addFlash('success', 'post added');
@@ -101,16 +87,12 @@ class AdminPostController extends AdminBaseController
      * @Route("/admin/post/update/{id}", name="admin_post_update")
      * @param int $id
      * @param Request $request
-     * @param FileManagerServiceInterface $fileManagerService
      * @return RedirectResponse|Response
      */
-    public function update(int $id, Request $request, FileManagerServiceInterface $fileManagerService)
+    public function update(int $id, Request $request)
     {
-        // create manager
-        $em = $this->getDoctrine()->getManager();
-
         // get post object by id
-        $post = $this->getDoctrine()->getRepository(Post::class)->find($id);
+        $post = $this->postRepository->getOnePost($id);
 
         // create form to change post
         $form = $this->createForm(PostType::class, $post);
@@ -125,32 +107,10 @@ class AdminPostController extends AdminBaseController
             if ($form->get('save')->isClicked())
             {
                 // get image from form
-                $image = $form->get('image')->getData();
+                $file = $form->get('image')->getData();
 
-                if ($image)
-                {
-                    // try to get old image
-                    $imageOld = $post->getImage();
-
-                    // if old image
-                    if ($imageOld)
-                    {
-                        // remove old image
-                        $fileManagerService->removePostImage($imageOld);
-                    }
-                    // upload new image and get its name
-                    $fileName = $fileManagerService->imagePostUpload($image);
-
-                    // set new image name
-                    $post->setImage($fileName);
-                }
-
-                // updated datetime update
-                $post->setUpdateAtValue();
-
-                // save data using manager ($em)
-                $em->persist($post);
-                $em->flush();
+                // create post and save it
+                $this->postRepository->setUpdatePost($post, $file);
 
                 // add flash message
                 $this->addFlash('success', 'post updated');
@@ -159,19 +119,8 @@ class AdminPostController extends AdminBaseController
             // check if the delete button was pressed
             if ($form->get('delete')->isClicked())
             {
-                // get image
-                $image = $post->getImage();
-
-                // if exists
-                if ($image)
-                {
-                    // remove image
-                    $fileManagerService->removePostImage($image);
-                }
-
-                // remove object using manager ($em)
-                $em->remove($post);
-                $em->flush();
+                // delete post object
+                $this->postRepository->setDeletePost($post);
 
                 // add flash message
                 $this->addFlash('success', 'post deleted');

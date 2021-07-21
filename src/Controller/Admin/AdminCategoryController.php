@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
+use App\Repository\CategoryRepositoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,18 +14,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminCategoryController extends AdminBaseController
 {
+    private $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     /**
      * @Route("/admin/category", name="admin_category")
      */
     public function index()
     {
-        // get all categories
-        $category = $this->getDoctrine()->getRepository(Category::class)->findAll();
-
         // create and fill context
         $forRender = parent::renderDefault();
         $forRender['title'] = 'Categories';
-        $forRender['category'] = $category;
+        $forRender['category'] = $this->categoryRepository->getAllCategory(); // get all categories
 
         // return render
         return $this->render('admin/category/index.html.twig', $forRender);
@@ -37,9 +42,6 @@ class AdminCategoryController extends AdminBaseController
      */
     public function create(Request $request)
     {
-        // create manager
-        $em = $this->getDoctrine()->getManager();
-
         // create new category object
         $category = new Category();
 
@@ -52,14 +54,8 @@ class AdminCategoryController extends AdminBaseController
         // check and process form
         if(($form->isSubmitted()) && ($form->isValid()))
         {
-            // set values
-            $category->setCreateAtValue();
-            $category->setUpdateAtValue();
-            $category->setIsPublished();
-
-            // save data using manager ($em)
-            $em->persist($category);
-            $em->flush();
+            // create category
+            $this->categoryRepository->setCreateCategory($category);
 
             // add flash message
             $this->addFlash('success', 'category added');
@@ -85,11 +81,8 @@ class AdminCategoryController extends AdminBaseController
      */
     public function update(int $id, Request $request)
     {
-        // create manager
-        $em = $this->getDoctrine()->getManager();
-
         // get category object by id
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
+        $category = $this->categoryRepository->getOneCategory($id);
 
         // create form to change category
         $form = $this->createForm(CategoryType::class, $category);
@@ -103,12 +96,8 @@ class AdminCategoryController extends AdminBaseController
             // check if the save button was pressed
             if ($form->get('save')->isClicked())
             {
-                // updated datetime update
-                $category->setUpdateAtValue();
-
-                // save data using manager ($em)
-                $em->persist($category);
-                $em->flush();
+                // update category
+                $this->categoryRepository->setUpdateCategory($category);
 
                 // add flash message
                 $this->addFlash('success', 'category updated');
@@ -117,9 +106,8 @@ class AdminCategoryController extends AdminBaseController
             // check if the delete button was pressed
             if ($form->get('delete')->isClicked())
             {
-                // remove data using manager ($em)
-                $em->remove($category);
-                $em->flush();
+                // delete category
+                $this->categoryRepository->setDeleteCategory($category);
 
                 // add flash message
                 $this->addFlash('success', 'category deleted');
