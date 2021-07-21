@@ -135,6 +135,7 @@ class AdminPostController extends AdminBaseController
         $forRender = parent::renderDefault();
         $forRender['title'] = 'Update post';
         $forRender['form'] = $form->createView();
+        $forRender['post'] = $post;
 
         // return render
         return $this->render('admin/post/form.html.twig', $forRender);

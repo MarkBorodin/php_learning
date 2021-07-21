@@ -7,6 +7,8 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 
 use App\Form\UserType;
+use App\Repository\UserRepositoryInterface;
+use App\Service\User\UserService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,17 +18,33 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminUserController extends AdminBaseController
 {
     /**
+     * @var UserRepositoryInterface
+     */
+    private UserRepositoryInterface $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    /**
      * @Route("/admin/user", name="admin_user")
      * @return Response
      */
     public function index()
     {
-        // get all users from db
-        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
         // context for render
         $forRender = parent::renderDefault();
-        $forRender['users'] = $users;
         $forRender['title'] = 'Users';
+
+        // get all users from db (can be like this):
+        // $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        // $forRender['users'] = $users
+
+        // or:
+        $users = $this->userRepository->getAll();
+        $forRender['users'] = $users;
+
         // return response
         return $this->render('admin/user/index.html.twig', $forRender);
     }
@@ -37,7 +55,7 @@ class AdminUserController extends AdminBaseController
      * @param UserPasswordHasherInterface $passwordHasher
      * @return RedirectResponse|Response
      */
-    public function create(Request $request, UserPasswordHasherInterface $passwordHasher)
+    public function createAction(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         // create user object
         $user = new User();
@@ -74,6 +92,52 @@ class AdminUserController extends AdminBaseController
         // return render
         return $this->render('admin/user/form.html.twig', $forRender);
 
+    }
+
+    /**
+     * @Route("/admin/user/update/{userId}", name="admin_user_update")
+     * @param Request $request
+     * @param int $userId
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @return RedirectResponse|Response
+     */
+    public function updateAction(Request $request, int $userId, UserPasswordHasherInterface $passwordHasher)
+    {
+        // create manager
+        $em = $this->getDoctrine()->getManager();
+
+        // get user by id
+        $user = $this->getDoctrine()->getRepository(User::class)->find($userId);
+
+        // create form and handleR request
+        $formUser = $this->createForm(UserType::class, $user);
+        $formUser->handleRequest($request);
+
+        // if form is valid
+        if(($formUser->isSubmitted()) && ($formUser->isValid()))
+        {
+            // get password hash
+            $password = $passwordHasher->hashPassword($user, $user->getPlainPassword());
+            // set password hash to user object
+            $user->setPassword($password);
+
+            // save data using manage ($em)
+            $em->persist($user);
+            $em->flush();
+
+            //message
+            $this->addFlash('success', 'user profile updated');
+
+            // redirect
+            return $this->redirectToRoute('admin_user');
+        }
+
+        // context
+        $forRender = parent::renderDefault();
+        $forRender['title'] = 'Edit user';
+        $forRender['form'] = $formUser->createView();
+
+        return $this->render('admin/user/form.html.twig', $forRender);
     }
 
 }

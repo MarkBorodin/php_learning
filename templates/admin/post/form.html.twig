@@ -18,4 +18,15 @@
             </div>
         </div>
     </div>
+
+    {% if post|default(null) %}
+        <div class="container mt-5 text-center">
+            <div class="row no-gutters">
+                <div class="col-12">
+                    <img src="{{ asset ('uploads/post/') }}{{ post.image }}" style="width: 800px;"><br><br><br>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
 {% endblock %}

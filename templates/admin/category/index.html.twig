@@ -4,9 +4,15 @@
     <div class="container-fluid">
         <div class="row no-gutters">
             <div class="col-12">
+
+                <div class="text-right mt-5">
+                    <a href="{{ path('admin_category_create') }}" class="btn btn-success">Create category</a>
+                </div>
+
                 <h1 class="display-4 text-center mt-5">
                     {{ title }}
                 </h1>
+
             </div>
         </div>
     </div>
@@ -30,25 +36,30 @@
     <div class="container">
         <div class="row no-gutters">
             <div class="col-12">
-                <h2>Category list</h2>
-                <ul>
-                    {% for category_item in category %}
-                        <li>
-                            {{ category_item.title }}
-                            <a href="{{ path('admin_category_update', {'id': category_item.id}) }}" class="btn-link">
-                                Update
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Update</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for category_item in category %}
+                            <tr>
+                                <td>
+                                    {{ category_item.title }}
+                                </td>
+                                <td>
+                                    <a href="{{ path('admin_category_update', {'id': category_item.id}) }}" class="btn btn-info">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr><br>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-    <div class="container">
-        <div class="row no-gutters">
-            <div class="col-12 mt-5">
-                <a href="{{ path('admin_category_create') }}" class="btn btn-success">Create category</a>
+
             </div>
         </div>
     </div>
