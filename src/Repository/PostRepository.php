@@ -17,9 +17,21 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class PostRepository extends ServiceEntityRepository implements PostRepositoryInterface
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
+    /**
+     * @var FileManagerServiceInterface
+     */
     private $fm;
 
+    /**
+     * PostRepository constructor.
+     * @param ManagerRegistry $registry
+     * @param EntityManagerInterface $manager
+     * @param FileManagerServiceInterface $fileManagerService
+     */
     public function __construct(ManagerRegistry $registry,
                                 EntityManagerInterface $manager,
                                 FileManagerServiceInterface $fileManagerService)
@@ -29,18 +41,30 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         parent::__construct($registry, Post::class);
     }
 
+    /**
+     * @return array
+     */
     public function getAllPost(): array
     {
         // get all pasts
         return parent::findAll();
     }
 
+    /**
+     * @param int $postId
+     * @return object
+     */
     public function getOnePost(int $postId): object
     {
         // get one post object by id
         return parent::find($postId);
     }
 
+    /**
+     * @param Post $post
+     * @param UploadedFile $file
+     * @return object
+     */
     public function setCreatePost(Post $post, UploadedFile $file): object
     {
         if ($file)
@@ -64,6 +88,11 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         return $post;
     }
 
+    /**
+     * @param Post $post
+     * @param UploadedFile $file
+     * @return object
+     */
     public function setUpdatePost(Post $post, $file): object
     {
         // get image name from post object
@@ -94,6 +123,9 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         return $post;
     }
 
+    /**
+     * @param Post $post
+     */
     public function setDeletePost(Post $post)
     {
         // get file
@@ -113,16 +145,32 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         $this->em->flush();
     }
 
-    public function get_all_without_id(): array
+    // query example
+
+    // get posts by category filter
+
+    /**
+     * @param int $categoryId
+     * @return Post[]
+     */
+    public function getPostsByCategoryFilter(int $categoryId): array
     {
-        // create db query builder and make query
-        $db = $this->createQueryBuilder('q')
-            ->select(
-                'q.title',
-                'q.content',
-                'post_category.title as category_title',
-            )
-            ->innerJoin('q.category', 'post_category');
+        // filter categories by id and return them
+        return $this->findBy(['id' => $categoryId]);
+    }
+
+    /**
+     * @param int $categoryId
+     */
+    public function getPostFilterJson(int $categoryId): array
+    {
+        // construct query to db
+        $db = $this->createQueryBuilder('p')
+            ->select('p.id', 'p.title', 'p.content', 'p.image', 'p.update_at', 'p.create_at', 'p.is_published', 'pc.title as titleCategory' )
+            ->innerJoin('p.category', 'pc')
+            ->where('p.id = :categoryId')
+            ->setParameter('categoryId', $categoryId);
+
         $query = $db->getQuery();
         return $query->execute();
     }

@@ -5,26 +5,55 @@
 {% block body %}
 
     <div class="container-fluid">
-        <div class="row no-gutters justify-content-center mt-5">
-            <div class="col-12 col-lg-6 col-md-6">
-                <h1 class="display-4 text-center">
-                    {{ title }}
-                </h1>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid">
         <div class="row no-gutters">
-            <div class="col-12 text-center mt-5">
+            <div class="col-12 text-center mt-5" style="">
+
                 <div id="app">
                     <h1 class="display-1">
                         [[ message ]]
                     </h1>
                 </div>
+
+                <div class="container text-left mt-5">
+                    <form>
+                        <label for="category"><h5>Categories:</h5></label>
+                        <select class="custom-select">
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">
+                                    {{ category.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-dark mt-3" type="submit" value="select">Select category</button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <div class="container mt-5 text-left">
+        <div class="row no-gutters">
+            <div class="col-12">
+                {% for post_item in posts %}
+                    <p style="border-bottom: 1px solid gray; padding-bottom: 20px;">
+                        <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
+                        <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>#}
+                        <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
+                        <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
+                        <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br><br>
+                        {{ post_item.content }}
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div><br>
+    <div class="container" style=" position: absolute; left: 50%; margin-left: -100px;">
+        {{ knp_pagination_render(posts) }}
+    </div><br><br><br><br>
+
+
+
 
 {% endblock %}
 
@@ -39,30 +68,5 @@
             },
         });
     </script>
-
-    <div class="container mt-5 text-left">
-        <div class="row no-gutters">
-            <div class="col-12">
-                {% for post_item in posts %}
-                    <a href="{{ path('admin_post_update', {'id': post_item.id}) }}" class="btn-link">
-                        <h2 style="text-align: center">{{ post_item.title }}</h2>
-                    </a><br>
-                    <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
-                    <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
-                    <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
-                    <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br><br>
-
-                    <p style="text-align: center">
-                        {{ post_item.content }}
-                    </p>
-                    <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" style="width: 1100px;"><br><br><br>
-                {% endfor %}
-            </div>
-        </div>
-    </div><br>
-    <div class="container" style=" position: absolute; left: 50%; margin-left: -100px;">
-        {{ knp_pagination_render(posts) }}
-    </div><br><br><br><br>
-
 
 {% endblock %}

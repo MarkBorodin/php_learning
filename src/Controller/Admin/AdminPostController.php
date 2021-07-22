@@ -38,6 +38,10 @@ class AdminPostController extends AdminBaseController
         $forRender['post'] = $this->postRepository->getAllPost();
         $forRender['check_category'] = $this->categoryRepository->getAllCategory();
 
+        // get all categories and add the, to context
+        $categories = $this->categoryRepository->getAllCategory();
+        $forRender['categories'] = $categories;
+
         // an example of a more complex query (in repository):
         // $forRender['posts_without_id'] = $this->postRepository->get_all_without_id();
 

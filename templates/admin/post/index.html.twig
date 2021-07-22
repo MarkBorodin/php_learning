@@ -25,9 +25,24 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="row no-gutters justify-content-center mt-3">
-            <div class="col-8">
+    <div class="container mt-5 text-left">
+        <div class="row no-gutters">
+            <div class="col-12">
+
+                <div class="container text-left mt-5">
+                    <form>
+                        <label for="category"><h5>Categories:</h5></label>
+                        <select class="custom-select">
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">
+                                    {{ category.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-dark mt-3" type="submit" value="select">Select category</button>
+                    </form>
+                </div>
+
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ message }}
@@ -42,23 +57,21 @@
 
     <div class="container mt-5 text-left">
         <div class="row no-gutters">
-            <div class="col-12">
-                    {% for post_item in post %}
-                        <a href="{{ path('admin_post_update', {'id': post_item.id}) }}" class="btn-link">
-                            <h2 style="text-align: center">{{ post_item.title }}</h2>
-                        </a><br>
+            <div class="col-12" >
+                {% for post_item in post %}
+                    <p style="border-bottom: 1px solid gray; padding-bottom: 20px;">
+                        <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
                         <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
                         <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br><br>
-
-                        <p style="text-align: center">
-                            {{ post_item.content }}
-                        </p>
-                        <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" style="width: 1100px;"><br><br><br>
-                    {% endfor %}
+                        {{ post_item.content }}
+                    </p>
+                {% endfor %}
             </div>
         </div>
-    </div>
+    </div><br>
+    <div class="container" style=" position: absolute; left: 50%; margin-left: -100px;">
+    </div><br><br><br><br>
 
 {% endblock %}

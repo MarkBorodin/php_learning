@@ -4,6 +4,7 @@
 namespace App\Controller\Main;
 
 use App\Entity\Post;
+use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\Criteria;
 use Knp\Component\Pager\Paginator;
@@ -14,14 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends BaseController
 {
     private PostRepository $postRepository;
+    private CategoryRepository $categoryRepository;
 
     /**
      * HomeController constructor.
      * @param PostRepository $postRepository
+     * @param CategoryRepository $categoryRepository
      */
-    public function __construct(PostRepository $postRepository)
+    public function __construct(PostRepository $postRepository, CategoryRepository $categoryRepository)
     {
         $this->postRepository = $postRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -34,6 +38,10 @@ class HomeController extends BaseController
     {
         // get context
         $forRender = parent::renderDefault();
+
+        // get all categories and add the, to context
+        $categories = $this->categoryRepository->getAllCategory();
+        $forRender['categories'] = $categories;
 
         // get manager
         $em = $this->getDoctrine()->getManager();
@@ -60,5 +68,10 @@ class HomeController extends BaseController
 
         // Render the twig view
         return $this->render('main/index.html.twig', $forRender);
+    }
+
+    public function indexByCategory(PaginatorInterface $paginator, Request $request)
+    {
+
     }
 }
