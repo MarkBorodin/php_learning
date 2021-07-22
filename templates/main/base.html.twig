@@ -12,6 +12,28 @@
         <link rel="stylesheet" href="{{ asset('assets/main/css/style.css') }}">
     {% endblock %}
 
+    <style>
+        html{
+            position:relative;
+            min-height: 100%;
+        }
+        /*Normalize html and body elements,this style is just good to have*/
+        html,body{
+            margin:0;
+            padding:0;
+        }
+        .pageContentWrapper{
+            margin-bottom:100px;/* Height of footer*/
+        }
+        .footer{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height:100px;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -35,8 +57,10 @@
     </div>
 </nav>
 
-{% block body %}
-{% endblock %}
+<div class="pageContentWrapper">
+    {% block body %}
+    {% endblock %}
+</div>
 
 {% block javascripts %}
     <!-- Optional JavaScript -->
@@ -48,6 +72,15 @@
     <script src="{{ asset('assets/framework/vue/vue.js') }}"></script>
     <script src="{{ asset('assets/framework/bootstrap-4.4.1/js/bootstrap.min.js') }}"></script>
     {% block addJs %}{% endblock %}
+{% endblock %}
+
+{% block footer %}
+    <footer class="footer">
+        <div class="container">
+            <p class="float-right"><a href="#">Back to top</a></p>
+            <p>© 2017-2021 Company, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+        </div>
+    </footer><br>
 {% endblock %}
 
 </body>

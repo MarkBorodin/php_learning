@@ -35,9 +35,34 @@
         let app = new Vue({
             el: '#app',
             data: {
-                message: 'Main page'
+                message: 'Blog'
             },
         });
     </script>
+
+    <div class="container mt-5 text-left">
+        <div class="row no-gutters">
+            <div class="col-12">
+                {% for post_item in posts %}
+                    <a href="{{ path('admin_post_update', {'id': post_item.id}) }}" class="btn-link">
+                        <h2 style="text-align: center">{{ post_item.title }}</h2>
+                    </a><br>
+                    <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
+                    <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
+                    <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
+                    <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br><br>
+
+                    <p style="text-align: center">
+                        {{ post_item.content }}
+                    </p>
+                    <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" style="width: 1100px;"><br><br><br>
+                {% endfor %}
+            </div>
+        </div>
+    </div><br>
+    <div class="container" style=" position: absolute; left: 50%; margin-left: -100px;">
+        {{ knp_pagination_render(posts) }}
+    </div><br><br><br><br>
+
 
 {% endblock %}

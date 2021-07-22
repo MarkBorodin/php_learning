@@ -38,6 +38,9 @@ class AdminPostController extends AdminBaseController
         $forRender['post'] = $this->postRepository->getAllPost();
         $forRender['check_category'] = $this->categoryRepository->getAllCategory();
 
+        // an example of a more complex query (in repository):
+        // $forRender['posts_without_id'] = $this->postRepository->get_all_without_id();
+
         // return render
         return $this->render('admin/post/index.html.twig', $forRender);
     }

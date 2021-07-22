@@ -112,4 +112,18 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         // save object
         $this->em->flush();
     }
+
+    public function get_all_without_id(): array
+    {
+        // create db query builder and make query
+        $db = $this->createQueryBuilder('q')
+            ->select(
+                'q.title',
+                'q.content',
+                'post_category.title as category_title',
+            )
+            ->innerJoin('q.category', 'post_category');
+        $query = $db->getQuery();
+        return $query->execute();
+    }
 }
