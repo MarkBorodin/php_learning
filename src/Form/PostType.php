@@ -43,13 +43,13 @@ class PostType extends AbstractType
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'attr' => [
-                    'class' => 'btn btn-success float-left mr-2'
+                    'class' => 'btn btn-success btn-lg btn-block mt-2'
                 ]
             ))
             ->add('delete', SubmitType::class, array(
                 'label' => 'delete',
                 'attr' => [
-                    'class' => 'btn btn-danger'
+                    'class' => 'btn btn-danger btn-lg btn-block mt-2',
                 ]
             ))
         ;

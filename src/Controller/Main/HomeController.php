@@ -118,7 +118,7 @@ class HomeController extends BaseController
         $forRender['form'] = $form->createView();
 
         // return render
-        return $this->render('admin/post/form.html.twig', $forRender);
+        return $this->render('main/form.html.twig', $forRender);
     }
 
     /**
