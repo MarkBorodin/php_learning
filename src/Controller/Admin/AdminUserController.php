@@ -74,7 +74,7 @@ class AdminUserController extends AdminBaseController
             // set password hash to user object
             $user->setPassword($password);
             // set role to user object
-            $user->setRoles(['ROLE_ADMIN']);
+//            $user->setRoles(['ROLE_ADMIN']);
             // save data using manage ($em)
             $em->persist($user);
             $em->flush();
@@ -134,7 +134,7 @@ class AdminUserController extends AdminBaseController
 
         // context
         $forRender = parent::renderDefault();
-        $forRender['title'] = 'Edit user';
+        $forRender['title'] = 'Edit profile';
         $forRender['form'] = $formUser->createView();
 
         return $this->render('admin/user/form.html.twig', $forRender);

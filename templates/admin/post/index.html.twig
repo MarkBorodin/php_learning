@@ -58,6 +58,10 @@
         <div class="row no-gutters">
             <div class="col-12" >
                 {% for post_item in post %}
+                    <br>
+                    <h3 style="text-align: center">
+                         {{ post_item.title }}
+                    </h3><br><br>
                     <p style="border-bottom: 1px solid gray; padding-bottom: 20px;">
                         <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
                         <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>

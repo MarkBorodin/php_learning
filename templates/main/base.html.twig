@@ -49,10 +49,15 @@
         </ul>
         <form class="form-inline">
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a href="{{ path('admin_home') }}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Admin</a>
+                <a href="{{ path('user_update', {'userId': app.user.id }) }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Profile</a>
             {% else %}
-                <a href="{{ path('admin_home') }}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</a>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Login</a>
             {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_home') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Admin</a>
+            {% endif %}
+
         </form>
     </div>
 </nav>
