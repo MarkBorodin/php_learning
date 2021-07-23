@@ -42,10 +42,15 @@
                 {% for post_item in posts %}
                     <br>
                     <h3 style="text-align: center">
-                        {% if post_item.user and post_item.user.id == app.user.id %}
-                            <a href="{{ path('post_update', {'id': post_item.id}) }}">
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            {% if post_item.user and post_item.user.id == app.user.id %}
+                                    <a href="{{ path('post_update', {'id': post_item.id}) }}">
+                                        {{ post_item.title }}
+                                    </a>
+                            {% else %}
                                 {{ post_item.title }}
-                            </a>
+                            {% endif %}
+
                         {% else %}
                             {{ post_item.title }}
                         {% endif %}
