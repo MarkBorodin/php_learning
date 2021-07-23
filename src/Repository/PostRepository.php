@@ -171,6 +171,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
             ->where('p.id = :categoryId')
             ->setParameter('categoryId', $categoryId);
 
+        // query execute
         $query = $db->getQuery();
         return $query->execute();
     }

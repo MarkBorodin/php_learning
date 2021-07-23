@@ -28,7 +28,7 @@ class DataService
     {
         $categoryId = $request->get('categoryId');
 
-//        return $this->postRepository->findBy(['category' => 'categoryId']);
+//        return $this->postRepository->findBy(['category' => (int)'categoryId']);
 
         return $this->postRepository->getPostFilterJson((int)$categoryId);
     }

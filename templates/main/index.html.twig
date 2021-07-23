@@ -14,19 +14,18 @@
                     </h1>
                 </div>
 
-                <div class="container text-left mt-5">
-                    <form>
-                        <label for="category"><h5>Categories:</h5></label>
-                        <select class="custom-select">
-                            {% for category in categories %}
-                                <option value="{{ category.id }}">
-                                    {{ category.title }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button class="btn btn-dark mt-3" type="submit" value="select">Select category</button>
-                    </form>
-                </div>
+{#                <div class="container text-left mt-5">#}
+{#                    <form>#}
+{#                        <label for="category"><h5>Categories:</h5></label>#}
+{#                        <select class="custom-select" name="filterPostCategory" id="filterPostCategory">#}
+{#                            {% for category in categories %}#}
+{#                                <option value="{{ category.id }}">#}
+{#                                    {{ category.title }}#}
+{#                                </option>#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                    </form>#}
+{#                </div>#}
 
             </div>
         </div>
@@ -38,7 +37,7 @@
                 {% for post_item in posts %}
                     <p style="border-bottom: 1px solid gray; padding-bottom: 20px;">
                         <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
-                        <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>#}
+                        <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
                         <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br><br>
@@ -67,6 +66,54 @@
                 message: 'Blog'
             },
         });
+    </script>
+
+    <script>
+        $(document).ready(function (){
+
+            // get variable with controller name
+            const controller = '{{ path('data_post') }}';
+
+            // filterPostCategory - id category select; on change - function:
+            $('#filterPostCategory').on('change', function (){
+                // new variable with selected category id
+                let categoryId = $(this).val();
+                // run ajax function with args categoryId and controller
+                ajaxPost(categoryId, controller);
+            })
+        });
+
+        function ajaxPost(categoryId, controller){
+            // new variable for data
+            let data = new FormData();
+            // append categoryId to data
+            data.append('categoryId', categoryId);
+
+            $.ajax({
+                // send to url:
+                url: controller,
+                // request method, and others params
+                type: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType: "json",
+                // send data
+                data: data,
+                // if success
+                success:
+                    function (response){
+                    console.log(response);
+                    },
+                // if error
+                onerror:
+                    function (){
+                        console.log('error');
+                    }
+            });
+        }
+
+
     </script>
 
 {% endblock %}

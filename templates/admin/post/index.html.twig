@@ -29,19 +29,18 @@
         <div class="row no-gutters">
             <div class="col-12">
 
-                <div class="container text-left mt-5">
-                    <form>
-                        <label for="category"><h5>Categories:</h5></label>
-                        <select class="custom-select">
-                            {% for category in categories %}
-                                <option value="{{ category.id }}">
-                                    {{ category.title }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button class="btn btn-dark mt-3" type="submit" value="select">Select category</button>
-                    </form>
-                </div>
+{#                <div class="container text-left mt-5">#}
+{#                    <form>#}
+{#                        <label for="category"><h5>Categories:</h5></label>#}
+{#                        <select class="custom-select">#}
+{#                            {% for category in categories %}#}
+{#                                <option value="{{ category.id }}">#}
+{#                                    {{ category.title }}#}
+{#                                </option>#}
+{#                            {% endfor %}#}
+{#                        </select>#}
+{#                    </form>#}
+{#                </div>#}
 
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
