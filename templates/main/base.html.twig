@@ -49,7 +49,9 @@
         </ul>
         <form class="form-inline">
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <span class="mr-3" style="color: yellowgreen; ">You are logged in as: {{ app.user.fullName }}</span>
                 <a href="{{ path('user_update', {'userId': app.user.id }) }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Profile</a>
+                <a href="{{ path('app_logout') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Logout</a>
             {% else %}
                 <a href="{{ path('app_login') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Login</a>
             {% endif %}

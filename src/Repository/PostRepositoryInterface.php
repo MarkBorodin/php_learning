@@ -23,9 +23,10 @@ interface PostRepositoryInterface
     /**
      * @param Post $post
      * @param UploadedFile $file
+     * @param $user
      * @return object
      */
-    public function setCreatePost(Post $post, UploadedFile $file): object;
+    public function setCreatePost(Post $post, UploadedFile $file, $user): object;
 
     /**
      * @param Post $post

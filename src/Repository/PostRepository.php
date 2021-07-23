@@ -47,7 +47,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     public function getAllPost(): array
     {
         // get all pasts
-        return parent::findAll();
+        return parent::findBy(array(), array('create_at' => 'ASC'));
     }
 
     /**
@@ -65,7 +65,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
      * @param UploadedFile $file
      * @return object
      */
-    public function setCreatePost(Post $post, UploadedFile $file): object
+    public function setCreatePost(Post $post, UploadedFile $file, $user): object
     {
         if ($file)
         {
@@ -80,6 +80,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         $post->setCreateAtValue();
         $post->setUpdateAtValue();
         $post->setIsPublished();
+        $post->setUser($user);
 
         // call manager and save object
         $this->em->persist($post);
@@ -161,6 +162,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
 
     /**
      * @param int $categoryId
+     * @return array
      */
     public function getPostFilterJson(int $categoryId): array
     {

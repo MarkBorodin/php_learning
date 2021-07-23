@@ -60,14 +60,19 @@
                 {% for post_item in post %}
                     <br>
                     <h3 style="text-align: center">
-                         {{ post_item.title }}
+                        <a href="{{ path('admin_post_update', {'id': post_item.id}) }}">
+                            {{ post_item.title }}
+                        </a>
                     </h3><br><br>
                     <p style="border-bottom: 1px solid gray; padding-bottom: 20px;">
                         <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
                         <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
                         <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
-                        <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br><br>
+                        <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br>
+                        <small style="text-align: left">
+                            Author: {% if post_item.user %}{{ post_item.user.getFullName }}{% endif %}
+                        </small><br><br>
                         {{ post_item.content }}
                     </p>
                 {% endfor %}

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class AdminPostController extends AdminBaseController
 {
@@ -54,8 +55,11 @@ class AdminPostController extends AdminBaseController
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function create(Request $request)
+    public function create(Request $request, Security $security)
     {
+        // get user
+        $user = $security->getUser();
+
         // create new post object
         $post = new Post();
 
@@ -72,7 +76,7 @@ class AdminPostController extends AdminBaseController
             $file = $form->get('image')->getData();
 
             // create post and save it
-            $this->postRepository->setCreatePost($post, $file);
+            $this->postRepository->setCreatePost($post, $file, $user);
 
             // add flash message
             $this->addFlash('success', 'post added');
