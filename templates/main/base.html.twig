@@ -39,7 +39,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{{ path('home') }}">
-        <i class="fa fa-microchip" aria-hidden="true"></i>
+        <i class="fa fa-ravelry" aria-hidden="true"></i>
     </a>
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
@@ -49,15 +49,15 @@
         </ul>
         <form class="form-inline">
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <span class="mr-3" style="color: yellowgreen; ">You are logged in as: {{ app.user.fullName }}</span>
-                <a href="{{ path('user_update', {'userId': app.user.id }) }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Profile</a>
-                <a href="{{ path('app_logout') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Logout</a>
+                <i class="fa fa-user-circle-o mr-2" aria-hidden="true" style="color: yellowgreen"></i><span class="mr-3" style="color: yellowgreen; ">You are logged in as: {{ app.user.fullName }}</span>
+                <i class="fa fa-sign-in mr-2" aria-hidden="true" style="color: yellowgreen"></i><a href="{{ path('app_logout') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Logout</a>
+                <i class="fa fa-address-card mr-2" aria-hidden="true" style="color: yellowgreen"></i><a href="{{ path('user_update', {'userId': app.user.id }) }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Profile</a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Login</a>
+                <i class="fa fa-sign-in mr-2" aria-hidden="true" style="color: yellowgreen"></i><a href="{{ path('app_login') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Login</a>
             {% endif %}
 
             {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('admin_home') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Admin</a>
+                <i class="fa fa-briefcase mr-2" aria-hidden="true" style="color: yellowgreen"></i><a href="{{ path('admin_home') }}" class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit">Admin</a>
             {% endif %}
 
         </form>
