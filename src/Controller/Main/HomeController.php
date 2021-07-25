@@ -67,7 +67,7 @@ class HomeController extends BaseController
         // Define the page parameter
             $request->query->getInt('page', 1),
         // Items per page
-            1
+            2
         );
 
         // add to context
@@ -176,7 +176,7 @@ class HomeController extends BaseController
         $forRender['post'] = $post;
 
         // return render
-        return $this->render('admin/post/form.html.twig', $forRender);
+        return $this->render('main/form.html.twig', $forRender);
 
     }
 

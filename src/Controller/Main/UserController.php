@@ -71,4 +71,48 @@ class UserController extends BaseController
         return $this->render('main/form.html.twig', $forRender);
     }
 
+    /**
+     * @Route("/user/create", name="user_create")
+     * @param Request $request
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @return RedirectResponse|Response
+     */
+    public function createAction(Request $request, UserPasswordHasherInterface $passwordHasher)
+    {
+        // create user object
+        $user = new User();
+        // create form
+        $form = $this->createForm(UserType::class, $user);
+        // create manager
+        $em = $this->getDoctrine()->getManager();
+        // data from form
+        $form->handleRequest($request);
+
+        // if form is valid
+        if(($form->isSubmitted()) && ($form->isValid()))
+        {
+            // get password hash
+            $password = $passwordHasher->hashPassword($user, $user->getPlainPassword());
+            // set password hash to user object
+            $user->setPassword($password);
+            // set role to user object
+//            $user->setRoles(['ROLE_ADMIN']);
+            // save data using manage ($em)
+            $em->persist($user);
+            $em->flush();
+
+            // return redirect to 'admin_user'
+            return $this->redirectToRoute('app_login');
+        }
+
+        // get context from superclass
+        $forRender = parent::renderDefault();
+        // change title from superclass
+        $forRender['title'] = 'Registration';
+        // add form to context
+        $forRender['form'] = $form->createView();
+        // return render
+        return $this->render('main/form.html.twig', $forRender);
+
+    }
 }
