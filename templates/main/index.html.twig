@@ -41,22 +41,22 @@
         <div class="row no-gutters">
             <div class="col-12">
                 {% for post_item in posts %}
-                    <br>
-                    <h3 style="text-align: center">
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            {% if post_item.user and post_item.user.id == app.user.id %}
-                                    <a href="{{ path('post_update', {'id': post_item.id}) }}">
-                                        {{ post_item.title }}
-                                    </a>
+                    <div style="border-bottom: 1px solid gray; padding-bottom: 20px;">
+                        <br>
+                        <h3 style="text-align: center">
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                {% if post_item.user and post_item.user.id == app.user.id %}
+                                        <a href="{{ path('post_update', {'id': post_item.id}) }}">
+                                            {{ post_item.title }}
+                                        </a>
+                                {% else %}
+                                    {{ post_item.title }}
+                                {% endif %}
+
                             {% else %}
                                 {{ post_item.title }}
                             {% endif %}
-
-                        {% else %}
-                            {{ post_item.title }}
-                        {% endif %}
-                    </h3><br><br>
-                    <p style="border-bottom: 1px solid gray; padding-bottom: 20px;">
+                        </h3><br>
                         <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
                         <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
                         <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
@@ -66,20 +66,38 @@
                         <small style="text-align: left">
                             Author: {% if post_item.user %}{{ post_item.user.getFullName }}{% endif %}
                         </small><br><br>
-                        {{ post_item.content }}
-                    </p><br><br>
+                        <p>{{ post_item.content }}</p><br>
 
-{#                    {% for comment in post_item.comment %}#}
-{#                        {{ comment.content }}#}
-{#                    {% endfor %}#}
+                        <h5>Comments:</h5>
+                        {% if post_item.comments|length > 0 %}
+                            {% if post_item.comments|length > 3 %}
+                                <small style="text-align: left; font-style: italic;">(Many comments. Showing the last three comments)</small><br>
+                                {% for comment in post_item.comments|slice(-3) %}
+                                    <div class="border rounded" style="padding: 10px;">
+                                        <p>User commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
+                                        <small style="text-align: left; font-style: italic;">(comment create at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
+                                    </div><br>
+                                {% endfor %}
+                            {% else %}
+                                {% for comment in post_item.comments %}
+                                    <div class="border rounded" style="padding: 10px;">
+                                        <p>User commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
+                                        <small style="text-align: left; font-style: italic;">(comment create at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
+                                    </div><br>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            <span style="font-style: italic;">no comments yet...</span>
+                        {% endif %}
 
-                    <form action="{{ path('comment_create', {'postId': post_item.id}) }}" method="post">
-                        <label for="context">Comment:</label>
-                        <input type="text" id="context" name="_context" placeholder="Enter your comment" value=""/>
-                        <input type="submit" name="save" value="save" />
-                    </form><br><br>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <form style="margin-bottom: 10px;" action="{{ path('comment_create', {'postId': post_item.id}) }}" method="post">
+                                <input  class="form-control" type="text" id="context" name="_context" placeholder="Enter your comment" value=""/>
+                                <input  class="btn btn-success mt-3" type="submit" name="save" value="save" />
+                            </form><br>
+                        {% endif %}
 
-
+                    </div><br>
                 {% endfor %}
             </div>
         </div>

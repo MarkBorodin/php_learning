@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
@@ -61,14 +62,15 @@ class Post
      */
     private $user;
 
-//    /**
-//     * @ORM\OneToMany(targetEntity="Comments", mappedBy="news")
-//     */
-//    protected $comments;
-//    public function __construct()
-//    {
-//        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
-//    }
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
+     */
+    private $comments;
+
+    public function __construct()
+    {
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -182,5 +184,13 @@ class Post
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

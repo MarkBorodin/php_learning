@@ -42,8 +42,8 @@ class CommentController extends BaseController
         $comment = new Comment();
 
         // get image from form
-//        $content = $request->request->get('_content');
-        $content = '123';
+        $content = $request->request->get('_context');
+//        $content = '123';
         $post = $this->postRepository->find($postId);
 
         $comment->setContent($content);
