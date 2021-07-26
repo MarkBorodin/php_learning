@@ -26,7 +26,7 @@ class Comment
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Post::class)
+     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="comment")
      * @ORM\JoinColumn(nullable=false)
      */
     private $post;

@@ -13,8 +13,6 @@ class CommentType extends AbstractType
     {
         $builder
             ->add('content')
-            ->add('create_at')
-            ->add('is_published')
             ->add('post')
         ;
     }

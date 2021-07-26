@@ -3,9 +3,12 @@
 
 namespace App\Controller\Main;
 
+use App\Entity\Comment;
 use App\Entity\Post;
+use App\Form\CommentType;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\Criteria;
 use Knp\Component\Pager\Paginator;
@@ -20,16 +23,18 @@ class HomeController extends BaseController
 {
     private PostRepository $postRepository;
     private CategoryRepository $categoryRepository;
+    private CommentRepository $commentRepository;
 
     /**
      * HomeController constructor.
      * @param PostRepository $postRepository
      * @param CategoryRepository $categoryRepository
      */
-    public function __construct(PostRepository $postRepository, CategoryRepository $categoryRepository)
+    public function __construct(PostRepository $postRepository, CategoryRepository $categoryRepository, CommentRepository $commentRepository)
     {
         $this->postRepository = $postRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -40,6 +45,7 @@ class HomeController extends BaseController
      */
     public function index(PaginatorInterface $paginator, Request $request)
     {
+
         // get context
         $forRender = parent::renderDefault();
 
@@ -80,6 +86,7 @@ class HomeController extends BaseController
     /**
      * @Route("post/create", name="post_create")
      * @param Request $request
+     * @param Security $security
      * @return RedirectResponse|Response
      */
     public function create(Request $request, Security $security)

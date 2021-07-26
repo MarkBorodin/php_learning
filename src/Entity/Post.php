@@ -61,6 +61,15 @@ class Post
      */
     private $user;
 
+//    /**
+//     * @ORM\OneToMany(targetEntity="Comments", mappedBy="news")
+//     */
+//    protected $comments;
+//    public function __construct()
+//    {
+//        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+//    }
+
     public function getId(): ?int
     {
         return $this->id;
