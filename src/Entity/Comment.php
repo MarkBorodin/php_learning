@@ -32,6 +32,12 @@ class Comment
     private $post;
 
     /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comment")
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
+     */
+    private $user;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $create_at;
@@ -100,5 +106,21 @@ class Comment
     public function setIsDraft()
     {
         $this->is_published = self::DRAFT;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user): void
+    {
+        $this->user = $user;
     }
 }

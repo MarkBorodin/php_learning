@@ -16,21 +16,27 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class CommentController extends BaseController
 {
     private PostRepository $postRepository;
     private CommentRepository $commentRepository;
+    /**
+     * @var Security
+     */
+    private $security;
 
     /**
      * HomeController constructor.
      * @param PostRepository $postRepository
      * @param CommentRepository $commentRepository
      */
-    public function __construct(PostRepository $postRepository, CommentRepository $commentRepository)
+    public function __construct(PostRepository $postRepository, CommentRepository $commentRepository, Security $security)
     {
         $this->postRepository = $postRepository;
         $this->commentRepository = $commentRepository;
+        $this->security = $security;
     }
 
     /**
@@ -51,11 +57,17 @@ class CommentController extends BaseController
         $content = $request->request->get('_context');
         $post = $this->postRepository->find($postId);
 
+        // get user from request
+        $user = $this->security->getUser();
+
+        // get data
         $comment->setContent($content);
         $comment->setPost($post);
         $comment->setCreateAtValue();
         $comment->setIsPublished();
+        $comment->setUser($user);
 
+        // save object
         $em->persist($comment);
         $em->flush();
 

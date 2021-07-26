@@ -59,7 +59,7 @@
                         </h3><br>
                         <img src="{{ asset ('uploads/post/') }}{{ post_item.image }}" width="200" style="float:left; margin: 7px 7px 7px 0;">
                         <small style="text-align: left">Category: {{ post_item.category.title }}</small><br>
-                        <small style="text-align: left">Create at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
+                        <small style="text-align: left">Created at: {{ post_item.getCreateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Update at: {{ post_item.getUpdateAt |date('d-m-Y') }}</small><br>
                         <small style="text-align: left">Is published: {{ post_item.getIsPublished ? 'Yes':'No' }} </small><br>
                         <small style="text-align: left">Id: {{ post_item.id }} </small><br>
@@ -75,14 +75,15 @@
                                 {% for comment in post_item.comments|slice(-3) %}
                                     <div class="border rounded" style="padding: 10px;">
                                         <p>User commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
-                                        <small style="text-align: left; font-style: italic;">(comment create at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
+                                        <small style="text-align: left; font-style: italic;">(comment created at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
+                                        <small style="text-align: left; font-style: italic;">(comment created by: {{ comment.user.getFullName }})</small><br>
                                     </div><br>
                                 {% endfor %}
                             {% else %}
                                 {% for comment in post_item.comments %}
                                     <div class="border rounded" style="padding: 10px;">
                                         <p>User commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
-                                        <small style="text-align: left; font-style: italic;">(comment create at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
+                                        <small style="text-align: left; font-style: italic;">(comment created at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
                                     </div><br>
                                 {% endfor %}
                             {% endif %}
