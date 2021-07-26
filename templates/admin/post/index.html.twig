@@ -81,7 +81,7 @@
                         {% if post_item.comments|length > 0 %}
                             {% for comment in post_item.comments %}
                                 <div class="border rounded" style="padding: 10px;">
-                                    <p>User commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
+                                    <p>{{ comment.user.getFullName }} commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
                                     <small style="text-align: left; font-style: italic;">(comment created at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
                                     <small style="text-align: left; font-style: italic;">(comment created by: {{ comment.user.getFullName }})</small><br>
 

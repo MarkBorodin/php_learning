@@ -11,6 +11,7 @@ use App\Form\UserType;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ class CommentController extends BaseController
 {
     private PostRepository $postRepository;
     private CommentRepository $commentRepository;
+    private UserRepository $userRepository;
     /**
      * @var Security
      */
@@ -31,11 +33,14 @@ class CommentController extends BaseController
      * HomeController constructor.
      * @param PostRepository $postRepository
      * @param CommentRepository $commentRepository
+     * @param UserRepository $userRepository
+     * @param Security $security
      */
-    public function __construct(PostRepository $postRepository, CommentRepository $commentRepository, Security $security)
+    public function __construct(PostRepository $postRepository, CommentRepository $commentRepository, UserRepository $userRepository, Security $security)
     {
         $this->postRepository = $postRepository;
         $this->commentRepository = $commentRepository;
+        $this->userRepository = $userRepository;
         $this->security = $security;
     }
 
@@ -58,9 +63,10 @@ class CommentController extends BaseController
         $post = $this->postRepository->find($postId);
 
         // get user from request
-        $user = $this->security->getUser();
+        $userId = $this->security->getUser();
+        $user = $this->userRepository->find($userId);
 
-        // get data
+        // set data
         $comment->setContent($content);
         $comment->setPost($post);
         $comment->setCreateAtValue();
