@@ -83,14 +83,20 @@
                                 <div class="border rounded" style="padding: 10px;">
                                     <p>User commented: <span style="font-style: italic">"{{ comment.content }}"</span></p>
                                     <small style="text-align: left; font-style: italic;">(comment create at: {{ comment.getCreateAt |date('d-m-Y') }})</small><br>
+
+                                    <form style="margin-bottom: 10px;" action="{{ path('admin_comment_delete', {'id': comment.id}) }}" method="post">
+                                        <input  class="btn btn-danger mt-3" type="submit" name="delete" value="delete" />
+                                    </form>
+
                                 </div><br>
+
                             {% endfor %}
                         {% else %}
-                            <span style="font-style: italic;">no comments yet...</span>
+                            <span style="font-style: italic; margin-bottom: 5px;">no comments yet...</span><br>
                         {% endif %}
 
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <form style="margin-bottom: 10px;" action="{{ path('comment_create', {'postId': post_item.id}) }}" method="post">
+                            <form style="margin-bottom: 10px;" action="{{ path('admin_comment_create', {'postId': post_item.id}) }}" method="post">
                                 <input  class="form-control" type="text" id="context" name="_context" placeholder="Enter your comment" value=""/>
                                 <input  class="btn btn-success mt-3" type="submit" name="save" value="save" />
                             </form><br>
