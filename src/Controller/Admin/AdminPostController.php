@@ -11,6 +11,7 @@ use App\Form\PostType;
 use App\Repository\CategoryRepositoryInterface;
 use App\Repository\PostRepositoryInterface;
 use App\Service\FileManagerServiceInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,21 +31,68 @@ class AdminPostController extends AdminBaseController
 
     /**
      * @Route("/admin/post", name="admin_post")
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
      */
-    public function index()
+    public function index(PaginatorInterface $paginator, Request $request)
     {
-        // create and fill context
-        $forRender = parent::renderDefault();
-        $forRender['title'] = 'Posts';
-        $forRender['post'] = $this->postRepository->getAllPost();
-        $forRender['check_category'] = $this->categoryRepository->getAllCategory();
+        // get categoryId from form
+        $categoryId = $request->request->get('category');
 
-        // get all categories and add the, to context
+        // create context
+        $forRender = parent::renderDefault();
+
+        // get all categories and add them to context
         $categories = $this->categoryRepository->getAllCategory();
         $forRender['categories'] = $categories;
 
-        // an example of a more complex query (in repository):
-        // $forRender['posts_without_id'] = $this->postRepository->get_all_without_id();
+        // get manager
+        $em = $this->getDoctrine()->getManager();
+
+        // Get some repository of data, in our case we have an Post entity (it is needed for pagination)
+        $postsRepository = $em->getRepository(Post::class);
+
+        // query if a category was selected
+        if($categoryId) {
+            // Find all the data on the Appointments table, filter your query as you need
+            $allPostsQuery = $postsRepository->createQueryBuilder('p')
+                ->where("p.category IN (:categoryId)")
+                ->setParameter('categoryId', $categoryId)
+                // sort by create_at
+                ->orderBy('p.create_at', 'ASC')
+                //get query
+                ->getQuery();
+
+            // get selected category
+            $category = $this->categoryRepository->findBy(['id' => $categoryId]);
+            // add it to context
+            $forRender['category'] = $category;
+        }
+
+        // query if no category has been selected
+        else
+        {
+            // Find all the data on the Appointments table, filter your query as you need
+            $allPostsQuery = $postsRepository->createQueryBuilder('p')
+                // sort by create_at
+                ->orderBy('p.create_at', 'ASC')
+                //get query
+                ->getQuery();
+        }
+
+        // Paginate the results of the query
+        $posts = $paginator->paginate(
+        // Doctrine Query, not results
+            $allPostsQuery,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            2
+        );
+
+        // add to context
+        $forRender['posts'] = $posts;
 
         // return render
         return $this->render('admin/post/index.html.twig', $forRender);
@@ -53,6 +101,7 @@ class AdminPostController extends AdminBaseController
     /**
      * @Route("/admin/post/create", name="admin_post_create")
      * @param Request $request
+     * @param Security $security
      * @return RedirectResponse|Response
      */
     public function create(Request $request, Security $security)

@@ -5,8 +5,9 @@
         <div class="row no-gutters">
             <div class="col-12">
 
+                {# create post or category #}
                 <div class="text-right mt-5">
-                    {% if check_category %}
+                    {% if categories %}
                         <a href="{{ path('admin_post_create') }}" class="btn btn-success">Create post</a>
                     {% else %}
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -17,6 +18,7 @@
                     {% endif %}
                 </div>
 
+                {# title #}
                 <h1 class="display-4 text-center mt-0">
                     {{ title }}
                 </h1>
@@ -29,19 +31,34 @@
         <div class="row no-gutters">
             <div class="col-12">
 
-{#                <div class="container text-left mt-5">#}
-{#                    <form>#}
-{#                        <label for="category"><h5>Categories:</h5></label>#}
-{#                        <select class="custom-select">#}
-{#                            {% for category in categories %}#}
-{#                                <option value="{{ category.id }}">#}
-{#                                    {{ category.title }}#}
-{#                                </option>#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-{#                    </form>#}
-{#                </div>#}
+                {# show categories to select #}
+                <div class="container text-left mt-5">
+                    <form style="margin-bottom: 10px;" action="{{ path('admin_post') }}" method="post">
+                        <p>Categories:</p>
+                        <div>
+                            {% for category in categories %}
+                                <input type="checkbox" id="category{{ category.id }}"
+                                       name="category[]" value="{{ category.id }}">
+                                <label for="category{{ category.id }}">{{ category.title }}</label><br>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <input  class="btn btn-success mt-3" type="submit" name="save" value="select"/>
+                        </div>
+                    </form>
+                </div>
 
+                {# show selected categories #}
+                <div class="container text-left mt-5">
+                    {% if category|default(null) %}
+                        <p>Selected categories: </p>
+                        {% for category_item in category %}
+                            * {{ category_item.title }}<br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {# show message #}
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ message }}
@@ -50,14 +67,18 @@
                         </button>
                     </div>
                 {% endfor %}
+
             </div>
         </div>
     </div>
 
+    {# main part #}
     <div class="container mt-5 text-left">
         <div class="row no-gutters">
             <div class="col-12" >
-                {% for post_item in post %}
+
+                {# show posts data #}
+                {% for post_item in posts %}
                         <div style="border-bottom: 1px solid gray; padding-bottom: 20px;">
                             <br>
                             <h3 style="text-align: center">
@@ -77,6 +98,7 @@
                                 </small><br><br>
                         <p>{{ post_item.content }}</p><br>
 
+                        {# show comments to posts #}
                         <h5>Comments:</h5>
                         {% if post_item.comments|length > 0 %}
                             {% for comment in post_item.comments %}
@@ -88,14 +110,13 @@
                                     <form style="margin-bottom: 10px;" action="{{ path('admin_comment_delete', {'id': comment.id}) }}" method="post">
                                         <input  class="btn btn-danger mt-3" type="submit" name="delete" value="delete" />
                                     </form>
-
                                 </div><br>
-
                             {% endfor %}
                         {% else %}
                             <span style="font-style: italic; margin-bottom: 5px;">no comments yet...</span><br>
                         {% endif %}
 
+                        {# add comment #}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <form style="margin-bottom: 10px;" action="{{ path('admin_comment_create', {'postId': post_item.id}) }}" method="post">
                                 <input  class="form-control" type="text" id="context" name="_context" placeholder="Enter your comment" value=""/>
@@ -108,7 +129,10 @@
             </div>
         </div>
     </div><br>
+
+    {# pagination #}
     <div class="container" style=" position: absolute; left: 50%; margin-left: -100px;">
+        {{ knp_pagination_render(posts) }}
     </div><br><br><br><br>
 
 {% endblock %}

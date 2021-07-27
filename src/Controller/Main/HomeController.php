@@ -45,26 +45,49 @@ class HomeController extends BaseController
      */
     public function index(PaginatorInterface $paginator, Request $request)
     {
+        // get categoryId from form
+        $categoryId = $request->request->get('category');
 
-        // get context
+        // create context
         $forRender = parent::renderDefault();
 
-        // get all categories and add the, to context
+        // get all categories and add them to context
         $categories = $this->categoryRepository->getAllCategory();
         $forRender['categories'] = $categories;
 
         // get manager
         $em = $this->getDoctrine()->getManager();
 
-        // Get some repository of data, in our case we have an Post entity
+        // Get some repository of data, in our case we have an Post entity (it is needed for pagination)
         $postsRepository = $em->getRepository(Post::class);
 
-        // Find all the data on the Appointments table, filter your query as you need
-        $allPostsQuery = $postsRepository->createQueryBuilder('p')
-            // sort by create_at
-            ->orderBy('p.create_at', 'ASC')
-            //get query
-            ->getQuery();
+        // query if a category was selected
+        if($categoryId) {
+            // Find all the data on the Appointments table, filter your query as you need
+            $allPostsQuery = $postsRepository->createQueryBuilder('p')
+                ->where("p.category IN (:categoryId)")
+                ->setParameter('categoryId', $categoryId)
+                // sort by create_at
+                ->orderBy('p.create_at', 'ASC')
+                //get query
+                ->getQuery();
+
+            // get selected category
+            $category = $this->categoryRepository->findBy(['id' => $categoryId]);
+            // add it to context
+            $forRender['category'] = $category;
+        }
+
+        // query if no category has been selected
+        else
+        {
+            // Find all the data on the Appointments table, filter your query as you need
+            $allPostsQuery = $postsRepository->createQueryBuilder('p')
+                // sort by create_at
+                ->orderBy('p.create_at', 'ASC')
+                //get query
+                ->getQuery();
+        }
 
         // Paginate the results of the query
         $posts = $paginator->paginate(

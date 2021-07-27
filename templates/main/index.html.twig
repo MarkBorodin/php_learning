@@ -7,39 +7,58 @@
     <div class="container-fluid">
         <div class="row no-gutters">
             <div class="col-12 text-center mt-5" style="">
+
+                {# create post button #}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <div class="text-right mt-3">
                         <a href="{{ path('post_create') }}" class="btn btn-success">Create post</a>
                     </div>
                 {% endif %}
 
+                {# show message (js) #}
                 <div id="app">
                     <h1 class="display-1">
                         [[ message ]]
                     </h1>
                 </div>
 
+                {# show categories to select #}
+                <div class="container text-left mt-5">
+                    <form style="margin-bottom: 10px;" action="{{ path('home') }}" method="post">
+                        <p>Categories:</p>
+                        <div>
+                            {% for category in categories %}
+                                <input type="checkbox" id="category{{ category.id }}"
+                                       name="category[]" value="{{ category.id }}">
+                                <label for="category{{ category.id }}">{{ category.title }}</label><br>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <input  class="btn btn-success mt-3" type="submit" name="save" value="select"/>
+                        </div>
+                    </form>
+                </div>
 
-                {#                <div class="container text-left mt-5">#}
-{#                    <form>#}
-{#                        <label for="category"><h5>Categories:</h5></label>#}
-{#                        <select class="custom-select" name="filterPostCategory" id="filterPostCategory">#}
-{#                            {% for category in categories %}#}
-{#                                <option value="{{ category.id }}">#}
-{#                                    {{ category.title }}#}
-{#                                </option>#}
-{#                            {% endfor %}#}
-{#                        </select>#}
-{#                    </form>#}
-{#                </div>#}
+                {# show selected categories #}
+                <div class="container text-left mt-5">
+                    {% if category|default(null) %}
+                        <p>Selected categories: </p>
+                            {% for category_item in category %}
+                                * {{ category_item.title }}<br>
+                            {% endfor %}
+                    {% endif %}
+                </div>
 
             </div>
         </div>
     </div>
 
+    {# main part #}
     <div class="container mt-5 text-left">
         <div class="row no-gutters">
             <div class="col-12">
+
+                {# show posts data #}
                 {% for post_item in posts %}
                     <div style="border-bottom: 1px solid gray; padding-bottom: 20px;">
                         <br>
@@ -68,6 +87,7 @@
                         </small><br><br>
                         <p>{{ post_item.content }}</p><br>
 
+                        {# show comments to posts #}
                         <h5>Comments:</h5>
                         {% if post_item.comments|length > 0 %}
                             {% if post_item.comments|length > 3 %}
@@ -91,6 +111,7 @@
                             <span style="font-style: italic; margin-bottom: 5px;">no comments yet...</span><br>
                         {% endif %}
 
+                        {# add comment #}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                             <form style="margin-bottom: 10px;" action="{{ path('comment_create', {'postId': post_item.id}) }}" method="post">
                                 <input  class="form-control" type="text" id="context" name="_context" placeholder="Enter your comment" value=""/>
@@ -103,12 +124,11 @@
             </div>
         </div>
     </div><br>
+
+    {# pagination #}
     <div class="container" style=" position: absolute; left: 50%; margin-left: -100px;">
         {{ knp_pagination_render(posts) }}
     </div><br><br><br><br>
-
-
-
 
 {% endblock %}
 
@@ -122,54 +142,6 @@
                 message: 'Blog'
             },
         });
-    </script>
-
-    <script>
-        $(document).ready(function (){
-
-            // get variable with controller name
-            const controller = '{{ path('data_post') }}';
-
-            // filterPostCategory - id category select; on change - function:
-            $('#filterPostCategory').on('change', function (){
-                // new variable with selected category id
-                let categoryId = $(this).val();
-                // run ajax function with args categoryId and controller
-                ajaxPost(categoryId, controller);
-            })
-        });
-
-        function ajaxPost(categoryId, controller){
-            // new variable for data
-            let data = new FormData();
-            // append categoryId to data
-            data.append('categoryId', categoryId);
-
-            $.ajax({
-                // send to url:
-                url: controller,
-                // request method, and others params
-                type: "POST",
-                contentType: false,
-                cache: false,
-                processData: false,
-                dataType: "json",
-                // send data
-                data: data,
-                // if success
-                success:
-                    function (response){
-                    console.log(response);
-                    },
-                // if error
-                onerror:
-                    function (){
-                        console.log('error');
-                    }
-            });
-        }
-
-
     </script>
 
 {% endblock %}
