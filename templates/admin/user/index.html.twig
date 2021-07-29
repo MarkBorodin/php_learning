@@ -42,6 +42,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Role</th>
                         <th scope="col">Update</th>
+                        <th scope="col">Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -55,12 +56,11 @@
                                     Edit
                                 </a>
                             </td>
-{#                            <td>#}
-{#                                <a href="{{ path('admin_user_update', {'userId': user.id }) }}"#}
-{#                                   class="btn btn-primary">#}
-{#                                    Edit#}
-{#                                </a>#}
-{#                            </td>#}
+                            <td>
+                                <form style="" action="{{ path('admin_user_delete', {'userId': user.id}) }}" method="post">
+                                    <input style="" class="btn btn-danger" type="submit" name="delete" value="Delete" />
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class AdminUserController extends AdminBaseController
 {
@@ -21,10 +22,15 @@ class AdminUserController extends AdminBaseController
      * @var UserRepositoryInterface
      */
     private UserRepositoryInterface $userRepository;
+    /**
+     * @var Security
+     */
+    private Security $security;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository, Security $security)
     {
         $this->userRepository = $userRepository;
+        $this->security = $security;
     }
 
     /**
@@ -138,6 +144,38 @@ class AdminUserController extends AdminBaseController
         $forRender['form'] = $formUser->createView();
 
         return $this->render('admin/user/form.html.twig', $forRender);
+    }
+
+    /**
+     * @Route("/admin/user/delete/{userId}", name="admin_user_delete")
+     * @param Request $request
+     * @param int $userId
+     */
+    public function deleteAction(Request $request, int $userId)
+    {
+
+        // get user now
+        $userNow = $this->security->getUser();
+
+        // get manager
+        $em = $this->getDoctrine()->getManager();
+
+        // get post object by id
+        $user = $this->userRepository->find($userId);
+
+        if($userNow->getId() != $user->getId())
+        {
+            if ($request->request->get('delete')) {
+                $em->remove($user);
+                $em->flush();
+
+                // add flash message
+                $this->addFlash('success', 'user deleted!');
+            }
+        }
+
+        // return render
+        return $this->redirectToRoute('admin_user');
     }
 
 }
