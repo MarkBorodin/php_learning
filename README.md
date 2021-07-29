@@ -1,6 +1,6 @@
 ## INSTALL APP
 
-##APP LEARNING
+## APP LEARNING
 
 Blog.  
 
@@ -61,9 +61,9 @@ create super user:
 php bin/console app:createsuperuser username email password
 ```
 (where:
-username - your user name;
-email - your email;
-password - your password)
+username - your username;  
+email - your email;  
+password - your password)  
 
 run:
 ```
