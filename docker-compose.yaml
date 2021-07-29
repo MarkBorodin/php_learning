@@ -1,0 +1,12 @@
+version: '3'
+services:
+  database:
+    container_name: app_learning
+    image: library/mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: main
+      MYSQL_DATABASE: main
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - 3306:3306
