@@ -2,38 +2,32 @@
 
 namespace App\Controller;
 
+use App\Message\MyEmailMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MailerController extends AbstractController
 {
+    private MessageBusInterface $bus;
+
+    public function __construct(MessageBusInterface $bus)
+    {
+        $this->bus = $bus;
+    }
+
     /**
      * @Route("/email")
      */
-    public function sendEmail(MailerInterface $mailer)
+    public function sendEmail(MessageBusInterface $bus)
     {
+        $emailTo = 'rens2588@gmail.com';
 
-//        try {
-            $email = (new Email())
-                ->from('hello@example.com')
-                ->to('rens2588@gmail.com')
-                //->cc('cc@example.com')
-                //->bcc('bcc@example.com')
-                //->replyTo('fabien@example.com')
-                //->priority(Email::PRIORITY_HIGH)
-                ->subject('Time for Symfony Mailer!')
-                ->text('Sending emails is fun again!')
-                ->html('<p>See Twig integration for better HTML integration!</p>');
-
-            $mailer->send($email);
-
-//        } catch (TransportExceptionInterface $e) {
-//            echo $e;
-//        }
+        $this->bus->dispatch(new MyEmailMessage($emailTo));
 
         return $this->redirectToRoute('home');
 
