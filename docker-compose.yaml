@@ -10,3 +10,6 @@ services:
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
       - 3306:3306
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    ports: [ 5672, 15672 ]
