@@ -41,6 +41,8 @@ And go to the directory with the project. The entire command must be executed in
 cd php_learning
 ```
 
+***create a .env file and fill it with your data, using the .env.example file as an example***
+
 Mysql is used as a database and it is started via docker-compose. To start the database, you need to run the command:
 ```
 docker-compose up
