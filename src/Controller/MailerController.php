@@ -4,12 +4,11 @@ namespace App\Controller;
 
 use App\Message\MyEmailMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Dotenv\Dotenv;
+
 
 class MailerController extends AbstractController
 {
@@ -23,13 +22,14 @@ class MailerController extends AbstractController
     /**
      * @Route("/email")
      */
-    public function sendEmail(MessageBusInterface $bus)
+    public function sendEmail(MessageBusInterface $bus): RedirectResponse
     {
-        $emailTo = 'rens2588@gmail.com';
+        $dotenv = new Dotenv();
+        $dotenv->load(__DIR__ . '/../../.env');
+        $emailTo = $_ENV['ADMIN_EMAIL'];
 
         $this->bus->dispatch(new MyEmailMessage($emailTo));
 
         return $this->redirectToRoute('home');
-
     }
 }

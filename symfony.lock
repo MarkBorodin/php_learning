@@ -130,6 +130,9 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "graham-campbell/result-type": {
+        "version": "v1.0.1"
+    },
     "kelunik/certificate": {
         "version": "v1.1.2"
     },
@@ -165,6 +168,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
+    },
+    "phpoption/phpoption": {
+        "version": "1.7.5"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -619,6 +625,9 @@
     },
     "twig/twig": {
         "version": "v3.3.2"
+    },
+    "vlucas/phpdotenv": {
+        "version": "v5.3.0"
     },
     "webmozart/assert": {
         "version": "1.10.0"

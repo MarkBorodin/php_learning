@@ -18,7 +18,6 @@ class EmailMessageHandler implements MessageHandlerInterface
 
     public function __invoke(MyEmailMessage $message)
     {
-        //        try {
         $email = (new Email())
             ->from('hello@example.com')
             ->to($message->getEmailTo())
@@ -28,12 +27,9 @@ class EmailMessageHandler implements MessageHandlerInterface
             //->priority(Email::PRIORITY_HIGH)
             ->subject('Time for Symfony Mailer!')
             ->text('Sending emails is fun again!')
-            ->html('<p>!!!!!!!!!!!!!!!!!!!!!!</p>');
+            ->html('<p>You have a new comment</p>');
 
         $this->mailer->send($email);
 
-        //        } catch (TransportExceptionInterface $e) {
-        //            echo $e;
-        //        }
     }
 }
