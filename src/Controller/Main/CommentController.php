@@ -84,10 +84,13 @@ class CommentController extends BaseController
         // add flash message
         $this->addFlash('success', 'comment added');
 
-
+        // get .env vars
         $dotenv = new Dotenv();
+        // load from .env file (need path to .env)
         $dotenv->load(__DIR__ . '/../../../.env');
+        // get some var
         $emailTo = $_ENV['ADMIN_EMAIL'];
+        // async email sending
         $this->bus->dispatch(new MyEmailMessage($emailTo));
 
         return $this->redirectToRoute('home');
